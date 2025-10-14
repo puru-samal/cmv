@@ -93,7 +93,7 @@ async def async_download(cfg: DictConfig) -> None:
     elapsed = time.perf_counter() - start_time
     print(f"{successes}/{len(results)} succeeded: Took {elapsed:.2f} seconds.")
 
-@hydra.main(version_base=None, config_path="../configs/setup", config_name="LibriTTS_download")
+@hydra.main(version_base=None, config_path="../../configs/setup", config_name="LibriTTS_download")
 def main(cfg: DictConfig) -> None:
     asyncio.run(async_download(cfg))
 
