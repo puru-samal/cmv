@@ -52,7 +52,7 @@ async def async_download_file(client: httpx.AsyncClient, sem: asyncio.Semaphore,
                 os.remove(tmp_path)
             return args, False
 
-@hydra.main(version_base=None, config_path="../configs/setup", config_name="LibriTTS_download")
+
 async def async_download(cfg: DictConfig) -> None:
     '''Main async function to download multiple files concurrently.'''
 
@@ -93,5 +93,9 @@ async def async_download(cfg: DictConfig) -> None:
     elapsed = time.perf_counter() - start_time
     print(f"{successes}/{len(results)} succeeded: Took {elapsed:.2f} seconds.")
 
+@hydra.main(version_base=None, config_path="../configs/setup", config_name="LibriTTS_download")
+def main(cfg: DictConfig) -> None:
+    asyncio.run(async_download(cfg))
+
 if __name__ == "__main__":
-    asyncio.run(async_download())
+    main()
