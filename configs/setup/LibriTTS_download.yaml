@@ -1,8 +1,8 @@
 
 download_links: # Source: https://www.openslr.org/60/
-  #train-clean-100.tar.gz: 
-  #  url: http://www.openslr.org/resources/60/train-clean-100.tar.gz
-  #  checksum: 4a8c202b78fe1bc0c47916a98f3a2ea8
+  train-clean-100.tar.gz: 
+    url: http://www.openslr.org/resources/60/train-clean-100.tar.gz
+    checksum: 4a8c202b78fe1bc0c47916a98f3a2ea8
   dev-clean.tar.gz:
     url: http://www.openslr.org/resources/60/dev-clean.tar.gz
     checksum: 0c3076c1e5245bb3f0af7d82087ee207
