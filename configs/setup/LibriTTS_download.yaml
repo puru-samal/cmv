@@ -3,21 +3,21 @@ download_links: # Source: https://www.openslr.org/60/
   train-clean-100.tar.gz: 
     url: http://www.openslr.org/resources/60/train-clean-100.tar.gz
     checksum: 4a8c202b78fe1bc0c47916a98f3a2ea8
+  dev-clean.tar.gz:
+    url: http://www.openslr.org/resources/60/dev-clean.tar.gz
+    checksum: 0c3076c1e5245bb3f0af7d82087ee207
+  test-clean.tar.gz:
+    url: http://www.openslr.org/resources/60/test-clean.tar.gz
+    checksum: 7bed3bdb047c4c197f1ad3bc412db59f
   #train-clean-360.tar.gz:
   #  url: http://www.openslr.org/resources/60/train-clean-360.tar.gz
   #  checksum: a84ef10ddade5fd25df69596a2767b2d
   #train-other-500.tar.gz:
   #  url: http://www.openslr.org/resources/60/train-other-500.tar.gz
   #  checksum: 7b181dd5ace343a5f38427999684aa6f
-  dev-clean.tar.gz:
-    url: http://www.openslr.org/resources/60/dev-clean.tar.gz
-    checksum: 0c3076c1e5245bb3f0af7d82087ee207
   #dev-other.tar.gz:
   #  url: http://www.openslr.org/resources/60/dev-other.tar.gz
   #  checksum: 815555d8d75995782ac3ccd7f047213d
-  test-clean.tar.gz:
-    url: http://www.openslr.org/resources/60/test-clean.tar.gz
-    checksum: 7bed3bdb047c4c197f1ad3bc412db59f
   #test-other.tar.gz:
   #  url: http://www.openslr.org/resources/60/test-other.tar.gz
   #  checksum: ae3258249472a13b5abef2a816f733e4

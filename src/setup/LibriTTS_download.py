@@ -7,7 +7,7 @@ import aiofiles
 import httpx
 from collections import namedtuple
 import hydra
-from omegaconf import DictConfig
+from omegaconf import OmegaConf, DictConfig
 Args = namedtuple('Args', ['url', 'path', 'checksum'])
 
 async def async_get(client: httpx.AsyncClient, url: str, chunk_size: int) -> AsyncIterator[bytes]:
@@ -61,7 +61,7 @@ async def async_download(cfg: DictConfig) -> None:
     concurrency = cfg.concurrency
     num_retries = cfg.num_retries
     chunk_size = cfg.chunk_size
-    links = cfg.download_links
+    links = OmegaConf.to_container(cfg.download_links, resolve=True) # avoid mutating input
 
     print(f"(Async) Downloading LibriTTS dataset files...")
     print(f"\t- Download directory: {download_dir}")
@@ -71,22 +71,21 @@ async def async_download(cfg: DictConfig) -> None:
     start_time = time.perf_counter()
     num_attempt = 0
     sem = asyncio.Semaphore(concurrency)
-    limits = httpx.Limits(max_keepalive_connections=concurrency, max_connections=concurrency*2)
-    local_links = links.copy()  # avoid mutating input
+    limits = httpx.Limits(max_keepalive_connections=concurrency, max_connections=concurrency*2) 
     
     # retry loop for failed downloads
-    while num_attempt < num_retries and local_links:
+    while num_attempt < num_retries and links:
         if num_attempt > 1:
-            print(f"Retry attempt {num_attempt}/{num_retries} for {len(local_links)} failed downloads...")
+            print(f"Retry attempt {num_attempt}/{num_retries} for {len(links)} failed downloads...")
         async with httpx.AsyncClient(limits=limits, http2=True, timeout=60.0) as client:
             tasks = []
-            for path, info in local_links.items():
+            for path, info in links.items():
                 dest = os.path.join(download_dir, path)
                 tasks.append(async_download_file(client, sem, Args(url=info['url'], path=dest, checksum=info['checksum']), chunk_size))
             results = await asyncio.gather(*tasks, return_exceptions=False) 
             for args, success in results:
                 if success:
-                    del local_links[os.path.basename(args.path)]
+                    del links[os.path.basename(args.path)]
         num_attempt += 1
 
     successes = sum(1 for _, status in results if status is True)
