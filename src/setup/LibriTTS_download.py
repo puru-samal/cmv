@@ -82,7 +82,7 @@ async def async_download(cfg: DictConfig) -> None:
             tasks = []
             for path, info in local_links.items():
                 dest = os.path.join(download_dir, path)
-                tasks.append(async_download_file(client, sem, Args(url=info['url'], path=dest, checksum=info['md5'])))
+                tasks.append(async_download_file(client, sem, Args(url=info['url'], path=dest, checksum=info['checksum']), chunk_size))
             results = await asyncio.gather(*tasks, return_exceptions=False) 
             for args, success in results:
                 if success:
