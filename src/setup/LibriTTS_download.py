@@ -32,7 +32,7 @@ async def async_download_file(client: httpx.AsyncClient, sem: asyncio.Semaphore,
 
             # download/write file in chunks
             async with aiofiles.open(tmp_path, 'wb') as f:
-                async for chunk in async_get(client, args.url):
+                async for chunk in async_get(client, args.url, chunk_size):
                     await f.write(chunk)
                     md5.update(chunk)
             
