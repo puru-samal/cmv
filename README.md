@@ -1,6 +1,9 @@
-<div align="center">    
-# 🎭 CMV: Change My Voice 
+<div align="center">
+
+# 🎭 CMV: Change My Voice
+
 ## ⚡️ Fast, Lightweight, Real-Time VC
+
 </div>
  
 ## Description   
