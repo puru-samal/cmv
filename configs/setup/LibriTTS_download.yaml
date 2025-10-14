@@ -1,0 +1,29 @@
+
+download_links: # Source: https://www.openslr.org/60/
+  train-clean-100.tar.gz: 
+    url: http://www.openslr.org/resources/60/train-clean-100.tar.gz
+    checksum: 2a93770f5a7508f360fdb2b6c6f7cfc9
+  train-clean-360.tar.gz:
+    url: http://www.openslr.org/resources/60/train-clean-360.tar.gz
+    checksum: c0e676e450a7ff2f54aeade5171605f5
+  train-other-500.tar.gz:
+    url: http://www.openslr.org/resources/60/train-other-500.tar.gz
+    checksum: 32fa31d27d2e1cad72775fee3ffcb50c
+  dev-clean.tar.gz:
+    url: http://www.openslr.org/resources/60/dev-clean.tar.gz
+    checksum: 42e2234ba48799c1f50f24a792c0fdb
+  dev-other.tar.gz:
+    url: http://www.openslr.org/resources/60/dev-other.tar.gz
+    checksum: 862c9caa5f6d464f4cdef68691a1f8c
+  test-clean.tar.gz:
+    url: http://www.openslr.org/resources/60/test-clean.tar.gz
+    checksum: 32fa31d27d2e1cad72775fee3ffcb50c
+  test-other.tar.gz:
+    url: http://www.openslr.org/resources/60/test-other.tar.gz
+    checksum: fb5a50374b501bb3bac4815ee91d313
+
+# Other parameters
+chunk_size: 65536  # 64KB
+download_dir: ./data/LibriTTS
+concurrency: 8
+num_retries: 3

@@ -1,0 +1,65 @@
+import torch 
+import torchaudio
+from typing import Literal
+from data.audio_utils import AudioUtils
+
+class Hubert:
+    """
+    Hubert Model used to produce soft speech units for content encoder training.
+    Reference:
+        https://ieeexplore.ieee.org/abstract/document/9746484
+        https://github.com/bshall/hubert
+    """
+
+    def __init__(self, device: str = "cuda"):
+        self.device = device
+
+    def _load_model(self, type: Literal["soft", "discrete"]):
+        """
+        Load the Hubert model
+        Args:
+            type (Literal["soft", "discrete"]): Type of Hubert model to load
+        """
+        if type not in ["soft", "discrete"]:
+            raise ValueError("[Hubert._load_model] Invalid type: must be 'soft' or 'discrete'")
+        print("Loading Hubert Model and checkpoint...")
+        type = "hubert_soft" if type == "soft" else "hubert_discrete"
+        self.model = torch.hub.load("bshall/hubert:main", type, trust_repo=True).to(self.device)
+        self.model.eval()
+
+    def extract_units(self, audio: torch.Tensor, sr: int) -> torch.Tensor:
+        """
+        Extract units from audio using Hubert model
+        Args:
+            audio (torch.Tensor): Audio tensor of shape (1, 1, T) where T is the number of samples
+            sr (int): Sample rate of the audio
+        Returns:
+            torch.Tensor: Speech units of shape (1, N, D) where N is the number of frames and D is the number of units
+                - N = T // 320 is the number of frames
+                - D = 256 is the number of units
+        """
+        assert sr == 16000, "[Hubert.extract_units] Sample rate must be 16000"
+        assert audio.ndim == 2, "[Hubert.extract_units] Audio must be 2D (num_channels, num_samples)"
+        assert audio.shape[0] == 1, "[Hubert.extract_units] Audio must be mono"
+        
+        if not hasattr(self, "model"):
+            try:
+                self._load_model("soft")
+            except Exception as e:
+                print(f"[Hubert.extract_units] Error loading model: {e}")
+                return None
+        audio = audio.to(self.device)
+        with torch.no_grad():
+            units = self.model.units(audio)
+        return self.model(audio)
+
+
+if __name__ == "__main__":
+    from data import AudioUtils
+    from pathlib import Path
+    
+    audio, sr = AudioUtils.load_audio(Path("data/audio/audio.wav"))
+    audio = AudioUtils.to_mono(audio) # (1, T)
+    hubert = Hubert(device="cpu")
+    units = hubert.extract_units(audio.unsqueeze(0), sr)
+    print(units.shape, audio.shape[-1] // 320)
