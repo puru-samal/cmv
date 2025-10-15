@@ -23,21 +23,45 @@ conda activate your-env-name
 
 # install project
 cd cmv
-pip install -e .
 pip install -r requirements.txt
 ```
 
 ### 2. Download Dataset
 
-Next step would involve downloading and pre-processing the dataset. To make training feasible, we train and evaluate on the `clean` subset of LibriTTS. The
+To download and validate the **LibriTTS** dataset, simply run:
 
 ```bash
-# module folder
-cd project
-
-# run module (example: mnist as your main contribution)
-python lit_classifier_main.py
+python src/setup/LibriTTS_extract.py
 ```
+
+This will:
+
+- Create a new `data/` directory (if it doesn’t already exist)
+- Asynchronously download the entire LibriTTS dataset
+- Perform basic integrity checks (via checksums)
+
+> ⚙️ Configuration:
+> You can modify the download settings (e.g., target directory, concurrency, number of retries, chunk size) in the config file at: `configs/setup/LibriTTS_download.yaml`
+
+> ⚠️ Warning:
+> The complete LibriTTS dataset is very large (~79 GB total).
+> Make sure you have sufficient disk space and a stable internet connection before running the script.
+
+The final directory structure will look like this:
+
+```
+data/
+└── LibriTTS/
+    ├── dev-clean.tar.gz
+    ├── dev-other.tar.gz
+    ├── test-clean.tar.gz
+    ├── test-other.tar.gz
+    ├── train-clean-100.tar.gz
+    ├── train-clean-360.tar.gz
+    └── train-other-500.tar.gz
+```
+
+### 3. Extract `tar.gz` files
 
 ## Imports
 

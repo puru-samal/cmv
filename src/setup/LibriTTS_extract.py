@@ -11,22 +11,22 @@ import logging
 log = logging.getLogger(__name__)
 
 def extract_targz_file(targz_path: str, extract_dir: str, attempts: int = 3) -> None:
-        '''A synchronous helper function to extract one or more tar.gz files.'''
-        if not tarfile.is_tarfile(targz_path):
-            log.error(f"[ERROR] {targz_path} is not a valid tar file.")
-            return
-        for attempt in range(attempts):
-            try:
-                with tarfile.open(targz_path, 'r:gz') as tar:
-                    tar.extractall(path=extract_dir, filter="fully_trusted")
-                log.info(f"[OK] Extracted {targz_path} to {extract_dir}")
-                os.remove(targz_path)
-                log.info(f"[OK] Removed {targz_path}")
-                return
-            except Exception as e:
-                log.error(f"[ERROR] Attempt {attempt + 1}/{attempts} failed: {e}")
-        log.error(f"[ERROR] Failed to extract {targz_path} after {attempts} attempts.")
+    '''A synchronous helper function to extract one or more tar.gz files.'''
+    if not tarfile.is_tarfile(targz_path):
+        log.error(f"[ERROR] {targz_path} is not a valid tar file.")
         return
+    for attempt in range(attempts):
+        try:
+            with tarfile.open(targz_path, 'r:gz') as tar:
+                tar.extractall(path=extract_dir, filter="fully_trusted")
+            log.info(f"[OK] Extracted {targz_path} to {extract_dir}")
+            os.remove(targz_path)
+            log.info(f"[OK] Removed {targz_path}")
+            return
+        except Exception as e:
+            log.error(f"[ERROR] Attempt {attempt + 1}/{attempts} failed: {e}")
+    log.error(f"[ERROR] Failed to extract {targz_path} after {attempts} attempts.")
+    return
 
 @hydra.main(version_base=None, config_path="../../configs/setup", config_name="LibriTTS_extract")
 def parallel_extract(cfg: DictConfig) -> None:
@@ -35,11 +35,11 @@ def parallel_extract(cfg: DictConfig) -> None:
     data_dir = cfg.data_dir
     extract_dir = cfg.extract_dir
     num_retries = cfg.num_retries
-    extension = ".tar.gz"
+    targz_paths = [os.path.join(data_dir, f) for f in cfg.files_to_extract]
 
     # Find all .tar.gz files in the data directory
-    targz_paths = list(Path(data_dir).rglob(f"*{extension}"))
     extract_dir = os.path.abspath(extract_dir)
+    os.makedirs(extract_dir, exist_ok=True)
     num_file, num_cpus = len(targz_paths), min(multiprocessing.cpu_count(), len(targz_paths))
     if num_file == 0:
         log.warning("No .tar.gz files found for extraction.")

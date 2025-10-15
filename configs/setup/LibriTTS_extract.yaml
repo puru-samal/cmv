@@ -1,3 +1,11 @@
 data_dir: ./data/LibriTTS
 extract_dir: ./data
 num_retries: 3
+files_to_extract:
+  - dev-clean.tar.gz
+  - dev-other.tar.gz
+  - test-clean.tar.gz
+  - test-other.tar.gz
+  # - train-clean-100.tar.gz
+  # - train-clean-360.tar.gz
+  # - train-other-500.tar.gz
