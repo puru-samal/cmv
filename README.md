@@ -9,25 +9,27 @@
 ## Description   
 What it does
 
-## How to run
+## Setup
 
-First, install dependencies
+### 1. Install Dependencies
 
 ```bash
 # clone project
-git clone https://github.com/YourGithubName/deep-learning-project-template
+git clone https://github.com/puru-samal/cmv.git
 
 # [Optional] Create a new conda environment
 conda create -n your-env-name python=3.12
 conda activate your-env-name
 
 # install project
-cd deep-learning-project-template
+cd cmv
 pip install -e .
 pip install -r requirements.txt
 ```
 
-Next, navigate to any file and run it.
+### 2. Download Dataset
+
+Next step would involve downloading and pre-processing the dataset. To make training feasible, we train and evaluate on the `clean` subset of LibriTTS. The
 
 ```bash
 # module folder
