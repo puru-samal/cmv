@@ -70,7 +70,9 @@ async def async_download(cfg: DictConfig) -> None:
     start_time = time.perf_counter()
     num_attempt = 0
     sem = asyncio.Semaphore(concurrency)
-    limits = httpx.Limits(max_keepalive_connections=concurrency, max_connections=concurrency*2) 
+    limits = httpx.Limits(max_keepalive_connections=concurrency, max_connections=concurrency*2)
+    total_files = len(links)
+    successes = 0
     
     # retry loop for failed downloads
     while num_attempt < num_retries and links:
@@ -85,11 +87,15 @@ async def async_download(cfg: DictConfig) -> None:
             for args, success in results:
                 if success:
                     del links[os.path.basename(args.path)]
+                    successes += 1
         num_attempt += 1
 
-    successes = sum(1 for _, status in results if status is True)
     elapsed = time.perf_counter() - start_time
-    print(f"{successes}/{len(results)} succeeded: Took {elapsed:.2f} seconds.")
+    print(f"{successes}/{total_files} succeeded: Took {elapsed:.2f} seconds.")
+    if links:
+        print(f"[ERROR] The following files failed to download after {num_retries} attempts:")
+        for path in links.keys():
+            print(f"\t- {path}")
 
 @hydra.main(version_base=None, config_path="../../configs/setup", config_name="LibriTTS_download")
 def main(cfg: DictConfig) -> None:
