@@ -1,3 +1,3 @@
 data_dir: ./data/LibriTTS
 extract_dir: ./data
-extension: .tar.gz
+num_retries: 3
