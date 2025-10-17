@@ -127,3 +127,10 @@ venv.bak/
 lightning_logs/
 MNIST
 .DS_Store
+
+# data directory
+data/
+test_data/
+
+# hydra logs
+outputs/

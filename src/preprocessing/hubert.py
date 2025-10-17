@@ -13,6 +13,11 @@ class Hubert:
 
     def __init__(self, device: str = "cuda"):
         self.device = device
+        self.model = None
+        try:
+            self._load_model("soft")
+        except Exception as e:
+            print(f"[Hubert.__init__] Error loading model: {e}")
 
     def _load_model(self, type: Literal["soft", "discrete"]):
         """
@@ -38,28 +43,25 @@ class Hubert:
                 - N = T // 320 is the number of frames
                 - D = 256 is the number of units
         """
+        if self.model is None:
+            print(f"[Hubert.extract_units] Error loading model: {e}")
+            return None
         assert sr == 16000, "[Hubert.extract_units] Sample rate must be 16000"
         assert audio.ndim == 2, "[Hubert.extract_units] Audio must be 2D (num_channels, num_samples)"
-        assert audio.shape[0] == 1, "[Hubert.extract_units] Audio must be mono"
-        
-        if not hasattr(self, "model"):
-            try:
-                self._load_model("soft")
-            except Exception as e:
-                print(f"[Hubert.extract_units] Error loading model: {e}")
-                return None
+        assert audio.shape[0] == 1, "[Hubert.extract_units] Audio must be mono"   
+
         audio = audio.to(self.device)
         with torch.no_grad():
             units = self.model.units(audio)
-        return self.model(audio)
+        return units.cpu()
 
 
 if __name__ == "__main__":
     from data import AudioUtils
     from pathlib import Path
     
-    audio, sr = AudioUtils.load_audio(Path("data/audio/audio.wav"))
-    audio = AudioUtils.to_mono(audio) # (1, T)
+    #audio, sr = AudioUtils.load_audio(Path("data/audio/audio.wav"))
+    #audio = AudioUtils.to_mono(audio) # (1, T)
     hubert = Hubert(device="cpu")
-    units = hubert.extract_units(audio.unsqueeze(0), sr)
-    print(units.shape, audio.shape[-1] // 320)
+    #units = hubert.extract_units(audio.unsqueeze(0), sr)
+    #print(units.shape, audio.shape[-1] // 320)

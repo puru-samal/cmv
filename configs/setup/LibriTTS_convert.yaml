@@ -1,12 +1,12 @@
-root_dir: ./test_data/LibriTTS
+root_dir: ./data/LibriTTS
 sub_directories_to_convert:
-  #- dev-clean
-  #- dev-other
+  - dev-clean
+  - dev-other
   - test-clean
   - test-other
-  #- train-clean-100
-  #- train-clean-360
-  #- train-other-500
+  - train-clean-100
+  - train-clean-360
+  - train-other-500
 num_retries: 3
 sample_rate_target: 16000 # Target sample rate for conversion (Hz)
 audio_extension_source: .wav # Source audio file extension

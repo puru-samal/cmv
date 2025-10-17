@@ -10,6 +10,9 @@ import hydra
 from omegaconf import OmegaConf, DictConfig
 Args = namedtuple('Args', ['url', 'path', 'checksum'])
 
+# Set up logging
+log = logging.getLogger(__name__)
+
 async def async_get(client: httpx.AsyncClient, url: str, chunk_size: int) -> AsyncIterator[bytes]:
     '''Async generator to fetch data in chunks from a URL.'''
     async with client.stream("GET", url=url) as response:
@@ -38,16 +41,16 @@ async def async_download_file(client: httpx.AsyncClient, sem: asyncio.Semaphore,
             
             # verify checksum
             if md5.hexdigest() != args.checksum:
-                print(f"[ERROR] Checksum mismatch for {args.path}. Expected {args.checksum}, got {md5.hexdigest()}")
+                log.error(f"[ERROR] Checksum mismatch for {args.path}. Expected {args.checksum}, got {md5.hexdigest()}")
                 os.remove(tmp_path)
                 return args, False
-            
-            print(f"[OK] {args.path}")
+
+            log.info(f"[OK] {args.path}")
             os.replace(tmp_path, args.path)
             return args, True
         
         except Exception as e:
-            print(f"[ERROR] {args.path} download failed: {e}")
+            log.error(f"[ERROR] {args.path} download failed: {e}")
             if os.path.exists(tmp_path):
                 os.remove(tmp_path)
             return args, False
@@ -62,10 +65,10 @@ async def async_download(cfg: DictConfig) -> None:
     chunk_size = cfg.chunk_size
     links = OmegaConf.to_container(cfg.download_links, resolve=True) # avoid mutating input
 
-    print(f"(Async) Downloading LibriTTS dataset files...")
-    print(f"\t- Download directory: {download_dir}")
-    print(f"\t- Concurrency: {concurrency}")
-    print(f"\t- Max retries per file: {num_retries}")
+    log.info(f"(Async) Downloading LibriTTS dataset files...")
+    log.info(f"\t- Download directory: {download_dir}")
+    log.info(f"\t- Concurrency: {concurrency}")
+    log.info(f"\t- Max retries per file: {num_retries}")
 
     start_time = time.perf_counter()
     num_attempt = 0
@@ -77,7 +80,7 @@ async def async_download(cfg: DictConfig) -> None:
     # retry loop for failed downloads
     while num_attempt < num_retries and links:
         if num_attempt > 1:
-            print(f"Retry attempt {num_attempt}/{num_retries} for {len(links)} failed downloads...")
+            log.info(f"Retry attempt {num_attempt}/{num_retries} for {len(links)} failed downloads...")
         async with httpx.AsyncClient(limits=limits, http2=True, timeout=60.0) as client:
             tasks = []
             for path, info in links.items():
@@ -91,11 +94,11 @@ async def async_download(cfg: DictConfig) -> None:
         num_attempt += 1
 
     elapsed = time.perf_counter() - start_time
-    print(f"{successes}/{total_files} succeeded: Took {elapsed:.2f} seconds.")
+    log.info(f"{successes}/{total_files} succeeded: Took {elapsed:.2f} seconds.")
     if links:
-        print(f"[ERROR] The following files failed to download after {num_retries} attempts:")
+        log.error(f"[ERROR] The following files failed to download after {num_retries} attempts:")
         for path in links.keys():
-            print(f"\t- {path}")
+            log.error(f"\t- {path}")
 
 @hydra.main(version_base=None, config_path="../../configs/setup", config_name="LibriTTS_download")
 def main(cfg: DictConfig) -> None:

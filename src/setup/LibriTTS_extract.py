@@ -49,7 +49,7 @@ def parallel_extract(cfg: DictConfig) -> None:
     start_time = time.perf_counter()
     log.info(f"(Parallel) Extracting LibriTTS tar.gz files...")
     log.info(f"\t- Number of files: {num_file}")
-    log.info(f"\t- Number of CPU cores: {num_cpus}")
+    log.info(f"\t- Number of CPU cores used: {num_cpus}")
     with multiprocessing.Pool(processes=num_cpus) as pool:
         pool.starmap(extract_targz_file, [(path, extract_dir, num_retries) for path in targz_paths])
     elapsed = time.perf_counter() - start_time
