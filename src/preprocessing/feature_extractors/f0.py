@@ -16,9 +16,9 @@ License:
 
 """
 
+import torch
 import typing as T
 import numpy as np
-import torch
 
 
 class F0:

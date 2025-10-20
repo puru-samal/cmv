@@ -3,7 +3,6 @@ import os
 from abc import abstractmethod
 from multiprocessing import Pool
 
-
 class BaseExtractor:
     """Base extractor class"""
 

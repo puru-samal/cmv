@@ -1,5 +1,5 @@
 import torch
-from data import AudioUtils
+from ...utils import AudioUtils
 
 
 class Energy:

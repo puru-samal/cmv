@@ -26,29 +26,29 @@ cd cmv
 pip install -r requirements.txt
 ```
 
-### 2. Download Dataset
+## 🧩 Dataset Setup
 
-To download and validate the **LibriTTS** dataset, simply run:
+### 1️⃣ Download the Dataset
+
+To download and validate the **LibriTTS** dataset, run:
 
 ```bash
-python src/setup/LibriTTS_extract.py
+python src/setup/LibriTTS_download.py
 ```
 
 This will:
+- 🗂️ Create a data/ directory (if it doesn’t exist)
+- ⚡ Asynchronously download all LibriTTS archive files
+- 🔍 Verify file integrity via checksums
 
-- Create a new `data/` directory (if it doesn’t already exist)
-- Asynchronously download the entire LibriTTS dataset
-- Perform basic integrity checks (via checksums)
-
-> ⚙️ Configuration:
-> You can modify the download settings (e.g., target directory, concurrency, number of retries, chunk size) in the config file at: `configs/setup/LibriTTS_download.yaml`
+> ⚙️ Config:
+> Adjust settings (target dir, concurrency, retries, chunk size) in `configs/setup/LibriTTS_download.yaml`
 
 > ⚠️ Warning:
-> The complete LibriTTS dataset is very large (~79 GB total).
-> Make sure you have sufficient disk space and a stable internet connection before running the script.
+> The full LibriTTS dataset is **~79 GB** — ensure you have enough disk space and a stable internet connection.
 
-The final directory structure will look like this:
-
+<details> 
+<summary>📁 <strong>Expected Directory Structure</strong></summary>
 ```
 data/
 └── LibriTTS/
@@ -60,8 +60,70 @@ data/
     ├── train-clean-360.tar.gz
     └── train-other-500.tar.gz
 ```
+</details>
 
-### 3. Extract `tar.gz` files
+### 2️⃣ Extract Archives
+
+Once downloaded, extract all `.tar.gz` files:
+
+```bash
+python src/setup/LibriTTS_download.py
+```
+
+This will:
+- 🧩 Parallelly extract all archives into the data/ directory
+- 🧹 Optionally delete archives and retry failed extractions
+
+> ⚙️ Config:
+> Control which files to extract, number of retries, and output path in `configs/setup/LibriTTS_extract.yaml`
+
+> ⚠️ Reminder:
+> Extraction also requires substantial free space (~79 GB).
+
+<details> 
+<summary>📂 <strong>Resulting Directory Structure</strong></summary>
+```
+data/
+└── LibriTTS/
+    ├── dev-clean
+    ├── dev-other
+    ├── test-clean
+    ├── test-other
+    ├── train-clean-100
+    ├── train-clean-360
+    ├── train-other-500
+    ├── BOOKS.txt
+    ├── CHAPTERS.txt
+    ├── eval_sentences10.tsv
+    ├── LICENSE.txt
+    ├── NOTE.txt
+    ├── reader_book.tsv
+    ├── README_librispeech.txt
+    ├── README_libritts.txt
+    ├── speakers.tsv
+    └── SPEAKERS.txt
+```
+</details>
+
+3️⃣ Resample to 16 kHz
+
+**LibriTTS** audio is originally at `24 kHz`. To ensure compatibility with the `HuBERT` feature extractor and improve efficiency, resample to `16 kHz`:
+
+```bash
+python src/setup/LibriTTS_convert.py
+```
+
+This will:
+- 🔄 Parallelly convert and overwrite all .wav files to 16 kHz
+- ♻️ Retry failed conversions automatically
+
+> ⚙️ Config:
+> Adjust folders and retries in `configs/setup/LibriTTS_convert.yaml`
+
+> ⚠️ Reminder:
+> Resampling is I/O heavy — allow time and ensure you have sufficient space.
+
+✅ After conversion, the directory structure remains unchanged.
 
 ## Imports
 

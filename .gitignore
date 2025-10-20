@@ -134,3 +134,6 @@ test_data/
 
 # hydra logs
 outputs/
+
+# Torch hub
+hub/

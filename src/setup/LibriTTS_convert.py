@@ -1,7 +1,5 @@
 from pathlib import Path
 import multiprocessing
-import tarfile
-import os
 import time
 import hydra
 from omegaconf import DictConfig
