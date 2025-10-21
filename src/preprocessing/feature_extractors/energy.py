@@ -8,7 +8,7 @@ class Energy:
     """
 
     @staticmethod
-    def extract(self, audio: torch.Tensor, sr: int) -> torch.Tensor:
+    def extract(audio: torch.Tensor, sr: int) -> torch.Tensor:
         """
         Extract energy from audio
         Args:
@@ -25,7 +25,7 @@ class Energy:
         frame_length = 1024 # 20ms for 16000kHz
 
         # split wav into 64ms frames with 20ms overlap
-        frames = AudioUtils.to_frames(audio.squeeze(0), frame_length=frame_length, hop_length=320) # (1024, N)
+        frames = AudioUtils.to_frames(audio, frame_length=frame_length, hop_length=320) # (1024, N)
         
         energy = (frames ** 2).sum(dim = 0).unsqueeze(0)
         return energy

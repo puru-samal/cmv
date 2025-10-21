@@ -69,7 +69,6 @@ class F0:
         """
         assert sample_rate == 16000, "[Yin.estimate] Sample rate must be 16000"
         assert signal.ndim == 1, "[Yin.estimate] Signal must be 1D (num_samples)"
-        assert signal.shape[0] == 1, "[Yin.estimate] Signal must be mono"
         signal = torch.as_tensor(signal)
 
         # convert frequencies to samples, ensure windows can fit 2 whole periods

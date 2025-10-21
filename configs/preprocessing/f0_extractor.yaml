@@ -1,0 +1,3 @@
+root_dirs:
+  - ./test-data/LibriTTS/test-clean
+  - ./test-data/LibriTTS/dev-clean

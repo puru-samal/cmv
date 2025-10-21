@@ -8,6 +8,7 @@ import httpx
 from collections import namedtuple
 import hydra
 from omegaconf import OmegaConf, DictConfig
+import logging
 Args = namedtuple('Args', ['url', 'path', 'checksum'])
 
 # Set up logging

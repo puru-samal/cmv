@@ -1,0 +1,4 @@
+root_dirs:
+  - ./data/LibriTTS/train-clean-100
+  - ./data/LibriTTS/train-clean-360
+  - ./data/LibriTTS/train-other-500
